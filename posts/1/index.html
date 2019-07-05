@@ -38,8 +38,25 @@ yum install chrony -y vim /etc/chrony.conf ... server 2.cn.pool.ntp.org iburst #
 <meta property="article:modified_time" content="2019-06-28T17:41:26+08:00" />
 
 
+    <style type="text/css">
+
+      @media(min-width: 940px){
+        .app-header {
+          position: relative;
+          float: left;
+          min-height: 90vh;
+        }
+        .app-container {
+          min-height: 95vh;
+        }
+      }
+      @media(min-width: 940px){
+      }
+      
+    </style>
   </head>
   <body>
+    <div>
     <header class="app-header">
       <a href="https://www.appso.top/"><img class="app-header-avatar" src="/avatar.jpg" alt="guoyecheng" /></a>
       <h1>暮色木木木木木</h1>
@@ -173,7 +190,7 @@ remote: Total 1415 (delta 0), reused 0 (delta 0), pack-reused 1415
 #修改认证
 auth       required pam_google_authenticator.so no_increment_hotp
 #配置sshd服务 修改sshd_config
-[root@test ~]# vim /etc/ssh/sshd_config 
+[root@test ~]# vim /etc/ssh/sshd_config
 ...
 PasswordAuthentication yes
 ChallengeResponseAuthentication yes
@@ -189,7 +206,7 @@ May 21 13:43:01 test sshd[3344]: PAM unable to dlopen(/usr/lib64/security/pam_go
 May 21 13:43:01 test sshd[3344]: PAM adding faulty module: /usr/lib64/security/pam_google_authenticator.so
 May 21 13:43:03 test sshd[3346]: pam_succeed_if(sshd:auth): requirement &quot;uid &gt;= 1000&quot; not met by user &quot;root&quot;
 #修改方法：创建软链接即可，必须创建，或者直接复制过去也可。
-[root@test ~]# ln -s /usr/local/lib/security/pam_google_authenticator.so /usr/lib64/security/pam_google_authenticator.so 
+[root@test ~]# ln -s /usr/local/lib/security/pam_google_authenticator.so /usr/lib64/security/pam_google_authenticator.so
 
 </code></pre>
 
@@ -247,8 +264,9 @@ auth       required pam_google_authenticator.so no_increment_hotp
   </article>
 
     </main>
-    <footer class="app-container">
-      23333x
+    </div>
+    <footer style="text-align: center;margin-bottom: 2.5rem;">
+        <a href="http://www.miitbeian.gov.cn/" target="_blank">沪ICP备18042433号-1</a>
     </footer>
   </body>
 </html>
