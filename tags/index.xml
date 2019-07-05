@@ -2,13 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on 暮色木木木木木</title>
-    <link>http://example.org/tags/</link>
+    <link>https://www.appso.top/tags/</link>
     <description>Recent content in Tags on 暮色木木木木木</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-ch</language>
+    <lastBuildDate>Wed, 03 Jul 2019 16:44:13 +0800</lastBuildDate>
     
-	<atom:link href="http://example.org/tags/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.appso.top/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>linux</title>
+      <link>https://www.appso.top/tags/linux/</link>
+      <pubDate>Wed, 03 Jul 2019 16:44:13 +0800</pubDate>
+      
+      <guid>https://www.appso.top/tags/linux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>“等级保护测评”</title>
+      <link>https://www.appso.top/tags/%E7%AD%89%E7%BA%A7%E4%BF%9D%E6%8A%A4%E6%B5%8B%E8%AF%84/</link>
+      <pubDate>Wed, 03 Jul 2019 16:44:13 +0800</pubDate>
+      
+      <guid>https://www.appso.top/tags/%E7%AD%89%E7%BA%A7%E4%BF%9D%E6%8A%A4%E6%B5%8B%E8%AF%84/</guid>
+      <description></description>
+    </item>
     
   </channel>
 </rss>

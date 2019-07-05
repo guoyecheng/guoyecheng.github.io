@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en-ch">
+  <head>
+    <title>linux系统安全基线配置 // 暮色木木木木木</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.56.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="guoyecheng" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://www.appso.top/css/main.min.f90f5edd436ec7b74ad05479a05705770306911f721193e7845948fb07fe1335.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="linux系统安全基线配置"/>
+<meta name="twitter:description" content="背景缘由 公司被要求对系统进行等级保护测评，经过初步测评，服务器linux系统基线配置有问题
+共享账号检查 用户账号分配检查，避免共享账号存在
+要求：
+ 按实际用户分配账号 避免不同用户间共享账号，避免用户账号和服务器间通信使用的账号共享  操作：
+cat /etc/passwd ，查看当前所有用户的情况，与管理员确认是否有共享账户的情况。 如果有共享账户需要建立新账户
+useradd username [...] passwd username  多余账户锁定 锁定多余的与设备运行维护无关的账号，比如test,www,demon账号等。。
+要求：
+应锁定与设备运行、维护等工作无关的账号
+操作：
+cat /etc/passwd ，查看哪些账户的shell域中为nologin，看多余账户的shell域是否为nologin，如果不是修改为nologin或者通过passwd -l username
+ssh远程登录限制 限制具备超级管理员权限的用户远程登录，远程执行管理员操作，应该先一普通权限用户远程登录后，在切换到超级管理管理员权限账号执行相应操作
+操作：
+禁用root用户原厂登录，修改/etc/ssh/sshd_config文件，将PermitRoorLogin yes改为PermitRootLogin no,重启sshd服务
+vim /etc/ssh/sshd_config #修改配置文件 service sshd restart  设置口令复杂度 口令长度至少12位，并包含数字，大小写字母和特殊符号
+linux 系统中对应的密码策略模块有： pam_passwdqc和pam_qwquality。其中pam_passwdqc模块对应的是/etc/login.defs，pam_pwdquality对应的是对应的是/etc/security/pwquality.conf
+方法一 查看cat /etc/pam.d/passwd，添加模块password required pam_pwquality.so
+配置的方法有两种
+ 直接在/etc/pam.d/passwd中添加 password required pam_pwquality.so dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minlen=12 添加到/etc/security/pwquality.conf 中  参数解释：
+ retry=N：定义登录/修改密码失败时，可以重试的次数； Difok=N：定义新密码中必须有几个字符要与旧密码不同。但是如果新密码中有1/2以上的字符与旧密码不同时，该新密码将被接受； minlen=N：定义用户密码的最小长度； dcredit=N：定义用户密码中必须包含多少个数字； ucredit=N：定义用户密码中必须包含多少个大写字母； lcredit=N：定义用户密码中必须包含多少个小些字母； ocredit=N：定义用户密码中必须包含多少个特殊字符（除数字、字母之外）； 其中 =-1表示，至少有一个  方法二 修改配置文件 /etc/pam."/>
+
+    <meta property="og:title" content="linux系统安全基线配置" />
+<meta property="og:description" content="背景缘由 公司被要求对系统进行等级保护测评，经过初步测评，服务器linux系统基线配置有问题
+共享账号检查 用户账号分配检查，避免共享账号存在
+要求：
+ 按实际用户分配账号 避免不同用户间共享账号，避免用户账号和服务器间通信使用的账号共享  操作：
+cat /etc/passwd ，查看当前所有用户的情况，与管理员确认是否有共享账户的情况。 如果有共享账户需要建立新账户
+useradd username [...] passwd username  多余账户锁定 锁定多余的与设备运行维护无关的账号，比如test,www,demon账号等。。
+要求：
+应锁定与设备运行、维护等工作无关的账号
+操作：
+cat /etc/passwd ，查看哪些账户的shell域中为nologin，看多余账户的shell域是否为nologin，如果不是修改为nologin或者通过passwd -l username
+ssh远程登录限制 限制具备超级管理员权限的用户远程登录，远程执行管理员操作，应该先一普通权限用户远程登录后，在切换到超级管理管理员权限账号执行相应操作
+操作：
+禁用root用户原厂登录，修改/etc/ssh/sshd_config文件，将PermitRoorLogin yes改为PermitRootLogin no,重启sshd服务
+vim /etc/ssh/sshd_config #修改配置文件 service sshd restart  设置口令复杂度 口令长度至少12位，并包含数字，大小写字母和特殊符号
+linux 系统中对应的密码策略模块有： pam_passwdqc和pam_qwquality。其中pam_passwdqc模块对应的是/etc/login.defs，pam_pwdquality对应的是对应的是/etc/security/pwquality.conf
+方法一 查看cat /etc/pam.d/passwd，添加模块password required pam_pwquality.so
+配置的方法有两种
+ 直接在/etc/pam.d/passwd中添加 password required pam_pwquality.so dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minlen=12 添加到/etc/security/pwquality.conf 中  参数解释：
+ retry=N：定义登录/修改密码失败时，可以重试的次数； Difok=N：定义新密码中必须有几个字符要与旧密码不同。但是如果新密码中有1/2以上的字符与旧密码不同时，该新密码将被接受； minlen=N：定义用户密码的最小长度； dcredit=N：定义用户密码中必须包含多少个数字； ucredit=N：定义用户密码中必须包含多少个大写字母； lcredit=N：定义用户密码中必须包含多少个小些字母； ocredit=N：定义用户密码中必须包含多少个特殊字符（除数字、字母之外）； 其中 =-1表示，至少有一个  方法二 修改配置文件 /etc/pam." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://www.appso.top/posts/2/" />
+<meta property="article:published_time" content="2019-07-03T16:44:13+08:00" />
+<meta property="article:modified_time" content="2019-07-03T16:44:13+08:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://www.appso.top/"><img class="app-header-avatar" src="/avatar.jpg" alt="guoyecheng" /></a>
+      <h1>暮色木木木木木</h1>
+      <p>就是喜欢编程</p>
+      <div class="app-header-social">
+        
+          <a target="_blank" href="https://github.com/guoyecheng"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg></a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">linux系统安全基线配置</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          2019-07-08
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          1 min read
+        </div><div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line>
+</svg>
+          <a class="tag" href="https://www.appso.top/tags/linux/">linux</a><a class="tag" href="https://www.appso.top/tags/%E7%AD%89%E7%BA%A7%E4%BF%9D%E6%8A%A4%E6%B5%8B%E8%AF%84/">“等级保护测评”</a></div></div>
+    </header>
+    <div class="post-content">
+      
+
+<h2 id="背景缘由">背景缘由</h2>
+
+<p>公司被要求对系统进行等级保护测评，经过初步测评，服务器linux系统基线配置有问题</p>
+
+<h2 id="共享账号检查">共享账号检查</h2>
+
+<p>用户账号分配检查，避免共享账号存在</p>
+
+<p>要求：</p>
+
+<ul>
+<li>按实际用户分配账号</li>
+<li>避免不同用户间共享账号，避免用户账号和服务器间通信使用的账号共享</li>
+</ul>
+
+<p>操作：</p>
+
+<p>cat /etc/passwd ，查看当前所有用户的情况，与管理员确认是否有共享账户的情况。
+如果有共享账户需要建立新账户</p>
+
+<pre><code class="language-liunx">
+useradd username [...]
+passwd username
+</code></pre>
+
+<h2 id="多余账户锁定">多余账户锁定</h2>
+
+<p>锁定多余的与设备运行维护无关的账号，比如test,www,demon账号等。。</p>
+
+<p>要求：</p>
+
+<p>应锁定与设备运行、维护等工作无关的账号</p>
+
+<p>操作：</p>
+
+<p>cat /etc/passwd ，查看哪些账户的shell域中为nologin，看多余账户的shell域是否为nologin，如果不是修改为nologin或者通过passwd -l username</p>
+
+<h2 id="ssh远程登录限制">ssh远程登录限制</h2>
+
+<p>限制具备超级管理员权限的用户远程登录，远程执行管理员操作，应该先一普通权限用户远程登录后，在切换到超级管理管理员权限账号执行相应操作</p>
+
+<p>操作：</p>
+
+<p>禁用root用户原厂登录，修改/etc/ssh/sshd_config文件，将PermitRoorLogin yes改为PermitRootLogin no,重启sshd服务</p>
+
+<pre><code class="language-linux">vim /etc/ssh/sshd_config
+#修改配置文件
+service sshd restart
+</code></pre>
+
+<h2 id="设置口令复杂度">设置口令复杂度</h2>
+
+<p>口令长度至少12位，并包含数字，大小写字母和特殊符号</p>
+
+<p>linux 系统中对应的密码策略模块有： pam_passwdqc和pam_qwquality。其中pam_passwdqc模块对应的是/etc/login.defs，pam_pwdquality对应的是对应的是/etc/security/pwquality.conf</p>
+
+<h3 id="方法一">方法一</h3>
+
+<p>查看cat /etc/pam.d/passwd，添加模块password required pam_pwquality.so</p>
+
+<p>配置的方法有两种</p>
+
+<ul>
+<li>直接在/etc/pam.d/passwd中添加 password required pam_pwquality.so dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 minlen=12</li>
+<li>添加到/etc/security/pwquality.conf 中</li>
+</ul>
+
+<p>参数解释：</p>
+
+<ul>
+<li>retry=N：定义登录/修改密码失败时，可以重试的次数；</li>
+<li>Difok=N：定义新密码中必须有几个字符要与旧密码不同。但是如果新密码中有1/2以上的字符与旧密码不同时，该新密码将被接受；</li>
+<li>minlen=N：定义用户密码的最小长度；</li>
+<li>dcredit=N：定义用户密码中必须包含多少个数字；</li>
+<li>ucredit=N：定义用户密码中必须包含多少个大写字母；</li>
+<li>lcredit=N：定义用户密码中必须包含多少个小些字母；</li>
+<li>ocredit=N：定义用户密码中必须包含多少个特殊字符（除数字、字母之外）；
+其中 =-1表示，至少有一个</li>
+</ul>
+
+<h3 id="方法二">方法二</h3>
+
+<p>修改配置文件 /etc/pam.d/system-auth，找到password模块接口的配置部分,找到类似
+ password  requisite  /lib/security/$ISA/pam_cracklib.so minlen =6的地方修改。</p>
+
+<p>参数解释：</p>
+
+<ul>
+<li>retry=N，确定用户创建密码时允许重试的次数；</li>
+<li>minlen=N，确定密码最小长度要求，事实上，在默认配置下，此参数代表密码最小长度为N-1；</li>
+<li>dcredit=N，当N小于0时，代表新密码中数字字符数量不得少于（-N）个。例如，dcredit=-2代表密码中要至少包含两个数字字符；</li>
+<li>ucredit=N，当N小于0时，代表则新密码中大写字符数量不得少于（-N）个；</li>
+<li>lcredit=N，当N小于0时，代表则新密码中小写字符数量不得少于（-N）个；</li>
+<li>ocredit=N，当N小于0时，代表则新密码中特殊字符数量不得少于（-N）个；</li>
+</ul>
+
+<h2 id="口令最长生存期">口令最长生存期</h2>
+
+<p>修改配置文件 /etc/login.defs</p>
+
+<ul>
+<li>PASS_MAX_DAYS   90  #密码最长过期天数</li>
+<li>PASS_MIN_DAYS   80  #密码最小过期天数</li>
+<li>PASS_MIN_LEN    12  #密码最小长度</li>
+<li>PASS_WARN_AGE   7   #密码过期警告天数</li>
+</ul>
+
+<h2 id="关键目录最小权限">关键目录最小权限</h2>
+
+<p>配置某些关键目录其所需要的最小权限，重点密码文件，比如password文件，shadow文件，group文件</p>
+
+<p>操作：</p>
+
+<pre><code class="language-linux">chmod 644 /etc/passwd #所有用户可读，root用户可写 -rw-r-r-
+chmod 600 /etc/shadow #只root用户可读 -r-------
+chmod 644 /etc/group  #所有用户都可读，root用户可写 –rw-r—r—
+</code></pre>
+
+<h2 id="用户缺省权限控制">用户缺省权限控制</h2>
+
+<p>控制用户缺省访问权限，当在创建新文件或目录时应屏蔽掉新文件或目录不应有的访问允许权限,防止同属于该组的其它用户及别的组的用户修改该用户的文件或更高限制。</p>
+
+<p>操作：</p>
+
+<ul>
+<li>查看/etc/bashrc中全局umask值</li>
+<li>查看具体用户目录下bash_profile,具体用户的umask</li>
+</ul>
+
+<p>全局umask值为027或者更小权限（特殊要求特殊处理），用户的umask，本着最小权限原则</p>
+
+<p>单独用户设置：</p>
+
+<p>修改home目录下.bash_profile ,增加umask 027;</p>
+
+<p>全局设置：</p>
+
+<p>修改/etc/bashrc,设置umask 027以上</p>
+
+<h2 id="安全日志">安全日志</h2>
+
+<p>系统应配置完备日志记录，记录对与系统相关的安全事件，查看/etc/syslog.conf和/var/log/secure 是否有相应的配置。</p>
+
+<p>操作：</p>
+
+<p>修改 /etc/syslog.conf 配置如下类似语句</p>
+
+<pre><code class="language-linux">authpriv.*      /var/log/secure
+</code></pre>
+
+<h2 id="设置history时间戳">设置history时间戳</h2>
+
+<p>查看/etc/bashrc 是否有相应配置 ，没有的话添加</p>
+
+<p>export HISTTIMEFORMAT=&ldquo;%F %T</p>
+
+<h2 id="ssh登录配置">ssh登录配置</h2>
+
+<p>查看ssh和telnet服务状态，不能实用telnet登录。
+ps -ef|grep sshd   ps -ef|grep telnet</p>
+
+<p>操作：</p>
+
+<p>修改ssh配置文件/etc/ssh/sshd_config</p>
+
+<pre><code class="language-linux">Protocol  2 #使用ssh2版本
+X11Forwarding yes #允许窗口图形传输使用ssh加密
+IgnoreRhosts  yes#完全禁止SSHD使用.rhosts文件
+RhostsAuthentication no #不设置使用基于rhosts的安全验证
+RhostsRSAAuthentication no #不设置使用RSA算法的基于rhosts的安全验证
+HostbasedAuthentication no #不允许基于主机白名单方式认证
+PermitRootLogin no #不允许root登录
+PermitEmptyPasswords no #不允许空密码
+Banner /etc/motd  #设置ssh登录时显示的banner
+
+#10分钟闲置后，自动注销并结束会话
+ClientAliveInterval 600
+ClientAliveCountMax 0
+
+</code></pre>
+
+<h2 id="禁止control-alt-delete键盘关闭命令">禁止Control-Alt-Delete键盘关闭命令</h2>
+
+<p>在“/etc/inittab” 文件中注释掉下面这行（使用#）：ca::ctrlaltdel:/sbin/shutdown -t3 -r now<br />
+改为： #ca::ctrlaltdel:/sbin/shutdown -t3 -r now<br />
+为了使此改动生效，输入下面这个命令： # /sbin/init q</p>
+
+<h2 id="安装操作系统更新补丁">安装操作系统更新补丁</h2>
+
+<p>安装操作系统更新补丁</p>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+    <footer class="app-container">
+      23333x
+    </footer>
+  </body>
+</html>
